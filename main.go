@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/aman1117/go-jwt/controllers"
 	"github.com/aman1117/go-jwt/initializers"
+	"github.com/aman1117/go-jwt/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,5 +21,6 @@ func main() {
 	})
 	r.POST("/signup", controllers.SignUp)
 	r.POST("/login", controllers.Login)
+	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.Run()
 }
