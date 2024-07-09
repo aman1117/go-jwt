@@ -14,14 +14,10 @@ func init() {
 }
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+
+	r.GET("/hello", controllers.Hello)
 	r.POST("/signup", controllers.SignUp)
 	r.POST("/login", controllers.Login)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
-	r.GET("/hello", controllers.Hello)
 	r.Run()
 }
