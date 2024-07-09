@@ -7,7 +7,7 @@ import (
 )
 
 func Hello(c *gin.Context) {
-	fmt.Print("Hello, World!")
+	fmt.Println("Hello, World!")
 	c.JSON(200, gin.H{
 		"message": "Hello, World!",
 	})
