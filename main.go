@@ -10,7 +10,7 @@ import (
 func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDb()
-	// initializers.SyncDatabase()
+	initializers.SyncDatabase()
 }
 func main() {
 	r := gin.Default()
