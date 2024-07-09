@@ -3,10 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/aman1117/go-jwt/initializers"
 	"github.com/aman1117/go-jwt/models"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -35,4 +37,42 @@ func SignUp(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"message": "User created successfully"})
+}
+
+func Login(c *gin.Context) {
+	var body struct {
+		Email    string
+		Password string
+	}
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Parameters"})
+		return
+	}
+
+	var user models.User
+	initializers.DB.First(&user, "email = ?", body.Email)
+	if user.ID == 0 {
+		c.JSON(500, gin.H{"error": "User not found"})
+		return
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+	if err != nil {
+		c.JSON(401, gin.H{"error": "Invalid Password"})
+		return
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.ID,
+		"exp": time.Now().Add(time.Hour).Unix(),
+	})
+	tokenString, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Error while generating token"})
+		return
+	}
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600, "", "", false, true)
+	c.JSON(200, gin.H{"token": tokenString})
+
 }
