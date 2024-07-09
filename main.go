@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/aman1117/go-jwt/controllers"
 	"github.com/aman1117/go-jwt/initializers"
 	"github.com/gin-gonic/gin"
 )
@@ -8,7 +9,7 @@ import (
 func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDb()
-	initializers.SyncDatabase()
+	// initializers.SyncDatabase()
 }
 func main() {
 	r := gin.Default()
@@ -17,5 +18,6 @@ func main() {
 			"message": "pong",
 		})
 	})
+	r.POST("/signup", controllers.SignUp)
 	r.Run()
 }
