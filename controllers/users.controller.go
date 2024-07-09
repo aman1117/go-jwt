@@ -13,6 +13,7 @@ import (
 )
 
 func SignUp(c *gin.Context) {
+	fmt.Print("Hello")
 	var body struct {
 		Email    string
 		Password string
